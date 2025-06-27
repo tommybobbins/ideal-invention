@@ -1,18 +1,76 @@
 import time
 import random
-import picodisplay as display  # Comment this line out to use PicoDisplay2
-# import picodisplay2 as display  # Uncomment this line to use PicoDisplay2
-import utime
+from picographics import PicoGraphics, DISPLAY_PICO_DISPLAY, PEN_P8
 import qrcode
+
+display = PicoGraphics(display=DISPLAY_PICO_DISPLAY, pen_type=PEN_P8)
+display.set_backlight(1.0)
+
+WIDTH, HEIGHT = display.get_bounds()
+
 
 width = display.get_width()
 height = display.get_height()
-
-
-display_buffer = bytearray(width * height * 2)  # 2-bytes per pixel (RGB565)
-display.init(display_buffer)
-
+display = PicoGraphics(display=DISPLAY_PICO_DISPLAY, pen_type=PEN_P8)
 display.set_backlight(1.0)
+
+WIDTH, HEIGHT = display.get_bounds()
+
+# We're creating 100 balls with their own individual colour and 1 BG colour
+# for a total of 101 colours, which will all fit in the custom 256 entry palette!
+
+
+class Ball:
+    def __init__(self, x, y, r, dx, dy, pen):
+        self.x = x
+        self.y = y
+        self.r = r
+        self.dx = dx
+        self.dy = dy
+        self.pen = pen
+
+
+# initialise shapes
+balls = []
+for _i in range(100):
+    r = random.randint(0, 10) + 3
+    balls.append(
+        Ball(
+            random.randint(r, r + (WIDTH - 2 * r)),
+            random.randint(r, r + (HEIGHT - 2 * r)),
+            r,
+            (14 - r) / 2,
+            (14 - r) / 2,
+            display.create_pen(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),
+        )
+    )
+
+BG = display.create_pen(40, 40, 40)
+
+while True:
+    display.set_pen(BG)
+    display.clear()
+
+    for ball in balls:
+        ball.x += ball.dx
+        ball.y += ball.dy
+
+        xmax = WIDTH - ball.r
+        xmin = ball.r
+        ymax = HEIGHT - ball.r
+        ymin = ball.r
+
+        if ball.x < xmin or ball.x > xmax:
+            ball.dx *= -1
+
+        if ball.y < ymin or ball.y > ymax:
+            ball.dy *= -1
+
+        display.set_pen(ball.pen)
+        display.circle(int(ball.x), int(ball.y), int(ball.r))
+
+    display.update()
+    time.sleep(0.01)
 
 # sets up a handy function we can call to clear the screen
 def clear():
@@ -37,7 +95,7 @@ def draw_qr_code(ox, oy, size, code):
                 display.rectangle(ox + x * module_size, oy + y * module_size, module_size, module_size)
 
 code = qrcode.QRCode()
-code.set_text("support.peak.ai")
+code.set_text("E50CD22A")
 size, module_size = measure_qr_code(height, code)
 left = int((width // 2) - (size // 2))
 top = int((height // 2) - (size // 2))
@@ -96,21 +154,21 @@ while True:
     if display.is_pressed(display.BUTTON_A):              # if a button press is detected then...
         clear()                                           # clear to black
         display.set_pen(255, 61, 130)                    # change the pen colour
-        display.text("Happy Holi from Squad Meteora", 2, 2, 240, 4)  # display some text on the screen
+        display.text("Hi Dave", 2, 2, 240, 4)  # display some text on the screen
         display.update()                                  # update the display
         utime.sleep(1)                                    # pause for a sec
         clear()                                           # clear to black again
     elif display.is_pressed(display.BUTTON_B):
         clear()
         display.set_pen(255, 217, 033)
-        display.text("Montreux 2022", 2, 2, 240, 4)
+        display.text("Another Button", 2, 2, 240, 4)
         display.update()
         utime.sleep(1)
         clear()
     elif display.is_pressed(display.BUTTON_X):
         clear()
         display.set_pen(115, 245, 145)
-        display.text("Meteora Rocks", 2, 2, 240, 4)
+        display.text("Stop pressing Buttons", 2, 2, 240, 4)
         display.update()
         utime.sleep(1)
         clear()
