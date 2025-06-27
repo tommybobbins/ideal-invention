@@ -22,7 +22,7 @@ regex = "Polar 360"
 
 async def scan_devices():
     
-  
+    print ("Inside scan_devices")
     async with aioble.scan(3000, interval_us=30000, window_us=30000, active=True) as scanner:
         devlist = {}
         async for result in scanner:
@@ -36,6 +36,7 @@ async def scan_devices():
 
 
 async def parse_devices():
+    print ("Inside parse_devices")
     devices = await scan_devices()
     polar_devices = []
     for dev in devices:
@@ -73,8 +74,6 @@ DARK = display.create_pen(112, 128, 40)
 DARKEST = display.create_pen(64, 80, 16)
 
 WIDTH, HEIGHT = display.get_bounds()
-
-QR_TEXT = "E50CD22A"
 
 # sets up a handy function we can call to clear the screen
 def clear():
@@ -117,18 +116,29 @@ while True:
     # button logic is reversed as we're using pull-ups
     if button_a.value() == 0:                             # if a button press is detected then...
         clear() 
-        led.set_rgb(48, 0, 48)
+        led.set_rgb(48, 24, 48)
         display.text("Button A pressed", 10, 10, 240, 4)
-        polar_devices=asyncio.run(parse_devices())
-        clear()                                           # clear to black
-        display.set_pen(LIGHTEST)                            # change the pen colour
-        show_qr(polar_devices[0])
         display.update()
-        #display.text("Button A pressed", 10, 10, 240, 4)  # display some text on the screen
-        display.update()
-        led.set_rgb(0, 24, 0)# update the display
-        time.sleep(60)                                     # pause for a sec
-        clear()                                           # clear to black again
+        print("About to scan")
+        try:
+            print("About to async")
+            try:
+                polar_devices=asyncio.wait(parse_devices())
+                show_qr(polar_devices[0])
+                display.update()
+                led.set_rgb(0, 24, 0)# update the display
+                time.sleep(60)                                     # pause for a sec
+                clear()
+            except:
+                polar_devices=[]
+                print("No Polar device found")
+                led.set_rgb(48, 0, 0)
+                display.text("No Polar found", 10, 10, 240, 4)
+                time.sleep(10)
+        except: #
+            led.set_rgb(24, 0, 0)# update the display
+            time.sleep(1)                                     # pause for a sec
+            clear()
     elif button_b.value() == 0:
         clear()
         display.set_pen(CYAN)
