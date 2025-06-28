@@ -92,9 +92,9 @@ def measure_qr_code(size, code):
 
 def draw_qr_code(ox, oy, size, code):
     size, module_size = measure_qr_code(size, code)
-    display.set_pen(WHITE)
-    display.rectangle(ox, oy, size, size)
     display.set_pen(BLACK)
+    display.rectangle(ox, oy, size, size)
+    display.set_pen(WHITE)
     for x in range(size):
         for y in range(size):
             if code.get_module(x, y):
