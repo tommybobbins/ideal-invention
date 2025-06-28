@@ -22,13 +22,15 @@ regex = "Polar 360"
 
 async def scan_devices():
     
-    print ("Inside scan_devices")
+#     print ("Inside scan_devices")
     async with aioble.scan(3000, interval_us=30000, window_us=30000, active=True) as scanner:
         devlist = {}
         async for result in scanner:
+            print(result)
             if result.name():
+#                 print(result.name())
                 if re.search(regex, result.name()):
-                    print(result, '::', binascii.hexlify(result.device.addr,':'), '::', result.name(), '::', result.rssi, '::')
+#                     print(result, '::', binascii.hexlify(result.device.addr,':'), '::', result.name(), '::', result.rssi, '::')
 #                     address = binascii.hexlify(result.device.addr.decode())
                     [address, name, rssi, services] = [ binascii.hexlify(result.device.addr,':') , result.name(), result.rssi, result.services() ]
                     devlist[name] = address
@@ -36,12 +38,12 @@ async def scan_devices():
 
 
 async def parse_devices():
-    print ("Inside parse_devices")
+#     print ("Inside parse_devices")
     devices = await scan_devices()
     polar_devices = []
     for dev in devices:
         replaced = dev.replace("Polar 360 ","")
-        print(f"Polar Device = {replaced}")
+#         print(f"Polar Device = {replaced}")
         polar_devices.append(replaced)
     return polar_devices
 
@@ -90,9 +92,9 @@ def measure_qr_code(size, code):
 
 def draw_qr_code(ox, oy, size, code):
     size, module_size = measure_qr_code(size, code)
-    display.set_pen(LIGHTEST)
+    display.set_pen(WHITE)
     display.rectangle(ox, oy, size, size)
-    display.set_pen(DARKEST)
+    display.set_pen(BLACK)
     for x in range(size):
         for y in range(size):
             if code.get_module(x, y):
@@ -100,12 +102,13 @@ def draw_qr_code(ox, oy, size, code):
 
 
 def show_qr(qr_text):  
-    display.set_pen(LIGHTEST)
+    display.set_pen(BLACK)
     display.clear()
     code = qrcode.QRCode()
     code.set_text(qr_text)
     size, module_size = measure_qr_code(HEIGHT, code)
-    left = int((WIDTH // 2) - (size // 2))
+#     left = int((WIDTH // 2) - (size // 2))
+    left = 0
     top = int((HEIGHT // 2) - (size // 2))
     draw_qr_code(left, top, HEIGHT, code)
 
@@ -119,11 +122,13 @@ while True:
         led.set_rgb(48, 24, 48)
         display.text("Button A pressed", 10, 10, 240, 4)
         display.update()
-        print("About to scan")
+#         print("About to scan")
         try:
             print("About to async")
             try:
-                polar_devices=asyncio.wait(parse_devices())
+#                 print("Trying")
+                polar_devices=asyncio.run(parse_devices())
+#                 print("Back from Polar Devices")
                 show_qr(polar_devices[0])
                 display.update()
                 led.set_rgb(0, 24, 0)# update the display
@@ -131,10 +136,14 @@ while True:
                 clear()
             except:
                 polar_devices=[]
-                print("No Polar device found")
+#                 print("No Polar device found")
                 led.set_rgb(48, 0, 0)
-                display.text("No Polar found", 10, 10, 240, 4)
+                display.clear()
+                show_qr("FAIL")
+                #display.text("No Polar found", 10, 10, 240, 4)
+                display.update()
                 time.sleep(10)
+                clear()
         except: #
             led.set_rgb(24, 0, 0)# update the display
             time.sleep(1)                                     # pause for a sec
