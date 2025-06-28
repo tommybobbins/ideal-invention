@@ -124,7 +124,7 @@ while True:
         display.update()
 #         print("About to scan")
         try:
-            print("About to async")
+#             print("About to async")
             try:
 #                 print("Trying")
                 polar_devices=asyncio.run(parse_devices())
