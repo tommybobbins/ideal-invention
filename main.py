@@ -92,9 +92,9 @@ def measure_qr_code(size, code):
 
 def draw_qr_code(ox, oy, size, code):
     size, module_size = measure_qr_code(size, code)
-    display.set_pen(BLACK)
-    display.rectangle(ox, oy, size, size)
     display.set_pen(WHITE)
+    display.rectangle(ox, oy, size, size)
+    display.set_pen(BLACK)
     for x in range(size):
         for y in range(size):
             if code.get_module(x, y):
@@ -102,13 +102,13 @@ def draw_qr_code(ox, oy, size, code):
 
 
 def show_qr(qr_text):  
-    display.set_pen(BLACK)
+    display.set_pen(WHITE)
     display.clear()
     code = qrcode.QRCode()
     code.set_text(qr_text)
     size, module_size = measure_qr_code(HEIGHT, code)
 #     left = int((WIDTH // 2) - (size // 2))
-    left = 0
+    left = 10
     top = int((HEIGHT // 2) - (size // 2))
     draw_qr_code(left, top, HEIGHT, code)
 
@@ -120,7 +120,7 @@ while True:
     if button_a.value() == 0:                             # if a button press is detected then...
         clear() 
         led.set_rgb(48, 24, 48)
-        display.text("Button A pressed", 10, 10, 240, 4)
+        #display.text("Button A pressed", 10, 10, 240, 4)
         display.update()
 #         print("About to scan")
         try:
@@ -131,13 +131,269 @@ while True:
 #                 print("Back from Polar Devices")
                 show_qr(polar_devices[0])
                 display.update()
-                led.set_rgb(0, 24, 0)# update the display
+                led.set_rgb(0, 2, 0)# update the display
                 time.sleep(60)                                     # pause for a sec
                 clear()
             except:
                 polar_devices=[]
 #                 print("No Polar device found")
-                led.set_rgb(48, 0, 0)
+                led.set_rgb(22
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            , 0, 0)
                 display.clear()
                 show_qr("FAIL")
                 #display.text("No Polar found", 10, 10, 240, 4)
